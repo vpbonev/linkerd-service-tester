@@ -1,0 +1,4 @@
+src/vendor
+.DS_Store
+.idea*
+istio-service-tester

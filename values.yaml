@@ -1,0 +1,44 @@
+# Default values for linkerd-service-tester.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+namespaces:
+  - foo
+  - bar
+# Namespace for the test services
+deployments:
+  - name: alpha
+    namespace: foo
+    replicaCount: 2
+    port: 9000
+    command: "/bin/ist -s 0.0.0.0:9000 -t beta:9001"
+    image:
+      repository: tibbar/linkerd-service-tester:latest
+      pullPolicy: IfNotPresent
+
+  - name: beta
+    namespace: foo
+    replicaCount: 2
+    port: 9001
+    command: "/bin/ist -s 0.0.0.0:9001 -t charlie:9000"
+    image:
+      repository: tibbar/linkerd-service-tester:latest
+      pullPolicy: IfNotPresent
+
+  - name: charlie
+    namespace: foo
+    replicaCount: 2
+    port: 9000
+    command: "/bin/ist -s 0.0.0.0:9000 -t delta.foo.svc.cluster.local:9001"
+    image:
+      repository: tibbar/linkerd-service-tester:latest
+      pullPolicy: IfNotPresent
+
+  - name: delta
+    namespace: bar
+    replicaCount: 2
+    port: 9001
+    command: "/bin/ist -s 0.0.0.0:9001 -t alpha.foo.svc.cluster.local:9000"
+    image:
+      repository: tibbar/linkerd-service-tester:latest
+      pullPolicy: IfNotPresent
